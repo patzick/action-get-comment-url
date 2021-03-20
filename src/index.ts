@@ -1,5 +1,5 @@
 import { context, getOctokit } from "@actions/github";
-import { getInput, setFailed } from "@actions/core";
+import { getInput, setFailed, setOutput } from "@actions/core";
 
 /**
  * Example comment:
@@ -7,7 +7,7 @@ import { getInput, setFailed } from "@actions/core";
  * 💙 shopware-pwa-canary successfully deployed at https://6bc7127fd9bef0a0b08bc14ea427fe5ddd986fde.shopware-pwa-canary.preview.storefrontcloud.io
  */
 
- const urlRegex = /(https?:\/\/[^ ]*)/;
+const urlRegex = /(https?:\/\/[^ ]*)/;
 
 async function run() {
   try {
@@ -29,7 +29,8 @@ async function run() {
     console.error("FOUND COMMENT", comment);
     if (comment) {
       const url = comment.body.match(urlRegex)?.[1];
-      console.error('WE HAVE URL', url)
+      console.error("WE HAVE URL", url);
+      setOutput("comment_url", url);
     }
     // await getCommentsForPattern({
     //   comments,

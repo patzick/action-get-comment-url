@@ -4449,10 +4449,10 @@ var require_core = __commonJS((exports) => {
     return val.trim();
   }
   exports.getInput = getInput2;
-  function setOutput(name, value) {
+  function setOutput2(name, value) {
     command_1.issueCommand("set-output", {name}, value);
   }
-  exports.setOutput = setOutput;
+  exports.setOutput = setOutput2;
   function setCommandEcho(enabled) {
     command_1.issue("echo", enabled ? "on" : "off");
   }
@@ -4535,6 +4535,7 @@ async function run() {
     if (comment) {
       const url = (_b = comment.body.match(urlRegex)) == null ? void 0 : _b[1];
       console.error("WE HAVE URL", url);
+      (0, import_core.setOutput)("comment_url", url);
     }
   } catch (error) {
     (0, import_core.setFailed)(error.message);
