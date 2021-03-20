@@ -4516,8 +4516,9 @@ var require_core = __commonJS((exports) => {
 // src/index.ts
 var import_github = __toModule(require_github());
 var import_core = __toModule(require_core());
+var urlRegex = /(https?:\/\/[^ ]*)/;
 async function run() {
-  var _a;
+  var _a, _b;
   try {
     const patterns = (0, import_core.getInput)("patterns").split("\n");
     const gitHubToken = (0, import_core.getInput)("token");
@@ -4531,6 +4532,10 @@ async function run() {
     console.error("ISSUE PATTERNS", patterns);
     const comment = comments.find(({body}) => body.includes(patterns == null ? void 0 : patterns[0]));
     console.error("FOUND COMMENT", comment);
+    if (comment) {
+      const url = (_b = comment.body.match(urlRegex)) == null ? void 0 : _b[1];
+      console.error("WE HAVE URL", url);
+    }
   } catch (error) {
     (0, import_core.setFailed)(error.message);
   }

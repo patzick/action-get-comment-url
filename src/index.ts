@@ -7,6 +7,8 @@ import { getInput, setFailed } from "@actions/core";
  * 💙 shopware-pwa-canary successfully deployed at https://6bc7127fd9bef0a0b08bc14ea427fe5ddd986fde.shopware-pwa-canary.preview.storefrontcloud.io
  */
 
+ const urlRegex = /(https?:\/\/[^ ]*)/;
+
 async function run() {
   try {
     const patterns = getInput("patterns").split("\n");
@@ -25,6 +27,10 @@ async function run() {
     const comment = comments.find(({ body }) => body.includes(patterns?.[0]));
 
     console.error("FOUND COMMENT", comment);
+    if (comment) {
+      const url = comment.body.match(urlRegex)?.[1];
+      console.error('WE HAVE URL', url)
+    }
     // await getCommentsForPattern({
     //   comments,
     //   pattern: patterns?.[0],
