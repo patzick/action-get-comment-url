@@ -4563,26 +4563,41 @@ function getUrlFromComment(comment, params = {}) {
 }
 
 // src/index.ts
-async function run() {
-  var _a;
+async function fetchComments({
+  client,
+  issueNumber
+}) {
   try {
-    const patterns = (0, import_core.getInput)("pattern").split("\n");
-    const gitHubToken = (0, import_core.getInput)("token");
-    const client = (0, import_github.getOctokit)(gitHubToken);
-    const issueNumber = (_a = import_github.context.payload.pull_request) == null ? void 0 : _a.number;
     const {data: comments} = await client.issues.listComments({
       ...import_github.context.repo,
       issue_number: issueNumber
     });
-    console.error("ISSUE NO", issueNumber);
-    console.error("ISSUE PATTERNS", patterns);
-    const comment = getComment({comments, pattern: patterns == null ? void 0 : patterns[0]});
-    console.error("FOUND COMMENT", comment);
-    if (comment) {
-      const url = getUrlFromComment(comment);
-      console.error("WE HAVE URL", url);
-      (0, import_core.setOutput)("comment_url", url);
-    }
+    return comments;
+  } catch (error) {
+    console.warn("No issues found for issue: " + issueNumber);
+    return [];
+  }
+}
+async function execute() {
+  var _a;
+  const patterns = (0, import_core.getInput)("pattern").split("\n");
+  const gitHubToken = (0, import_core.getInput)("token");
+  const client = (0, import_github.getOctokit)(gitHubToken);
+  const issueNumber = (_a = import_github.context.payload.pull_request) == null ? void 0 : _a.number;
+  console.error("ISSUE NO", issueNumber);
+  console.error("ISSUE PATTERNS", patterns);
+  const comments = await fetchComments({client, issueNumber});
+  const comment = getComment({comments, pattern: patterns == null ? void 0 : patterns[0]});
+  console.error("FOUND COMMENT", comment);
+  if (comment) {
+    const url = getUrlFromComment(comment);
+    console.error("WE HAVE URL", url);
+    (0, import_core.setOutput)("comment_url", url);
+  }
+}
+async function run() {
+  try {
+    await execute();
   } catch (error) {
     (0, import_core.setFailed)(`[action-get-comment-url] ${error.message}`);
   }
