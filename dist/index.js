@@ -4457,11 +4457,11 @@ var require_core = __commonJS((exports) => {
     command_1.issue("echo", enabled ? "on" : "off");
   }
   exports.setCommandEcho = setCommandEcho;
-  function setFailed(message) {
+  function setFailed2(message) {
     process.exitCode = ExitCode.Failure;
     error(message);
   }
-  exports.setFailed = setFailed;
+  exports.setFailed = setFailed2;
   function isDebug() {
     return process.env["RUNNER_DEBUG"] === "1";
   }
@@ -4524,17 +4524,21 @@ async function getCommentsForPattern({client, pattern, issueNumber}) {
   console.error("comments", comments);
 }
 async function run() {
-  const patterns = (0, import_core.getInput)("patterns").split("\n");
-  const gitHubToken = (0, import_core.getInput)("token");
-  const client = (0, import_github.getOctokit)(gitHubToken);
-  const {repo, payload} = import_github.context;
-  const issueNumber = payload.pull_request && payload.pull_request.number;
-  console.error("ISSUE NO", issueNumber);
-  console.error("ISSUE PATTERNS", patterns);
-  await getCommentsForPattern({
-    client,
-    pattern: patterns == null ? void 0 : patterns[0],
-    issueNumber
-  });
+  try {
+    const patterns = (0, import_core.getInput)("patterns").split("\n");
+    const gitHubToken = (0, import_core.getInput)("token");
+    const client = (0, import_github.getOctokit)(gitHubToken);
+    const {repo, payload} = import_github.context;
+    const issueNumber = payload.pull_request && payload.pull_request.number;
+    console.error("ISSUE NO", issueNumber);
+    console.error("ISSUE PATTERNS", patterns);
+    await getCommentsForPattern({
+      client,
+      pattern: patterns == null ? void 0 : patterns[0],
+      issueNumber
+    });
+  } catch (error) {
+    (0, import_core.setFailed)(error.message);
+  }
 }
 run();
