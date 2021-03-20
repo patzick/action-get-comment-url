@@ -5,8 +5,8 @@ inputs:
   token:
     description: 'Github API token'
     required: true
-  patterns:
-    description: 'List of patterns you have in comments with URLs'
+  pattern:
+    description: 'Pattern you have in comments with URLs'
     default: ''
 runs:
   using: 'node12'

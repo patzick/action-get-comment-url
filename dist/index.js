@@ -4449,10 +4449,10 @@ var require_core = __commonJS((exports) => {
     return val.trim();
   }
   exports.getInput = getInput2;
-  function setOutput(name, value) {
+  function setOutput2(name, value) {
     command_1.issueCommand("set-output", {name}, value);
   }
-  exports.setOutput = setOutput;
+  exports.setOutput = setOutput2;
   function setCommandEcho(enabled) {
     command_1.issue("echo", enabled ? "on" : "off");
   }
@@ -4516,27 +4516,27 @@ var require_core = __commonJS((exports) => {
 // src/index.ts
 var import_github = __toModule(require_github());
 var import_core = __toModule(require_core());
-async function getCommentsForPattern({client, pattern, issueNumber}) {
-  const {data: comments} = await client.issues.listComments({
-    ...import_github.context.repo,
-    issue_number: issueNumber
-  });
-  console.error("comments", comments);
-}
+var urlRegex = /(https?:\/\/[^ ]*)/;
 async function run() {
+  var _a, _b;
   try {
-    const patterns = (0, import_core.getInput)("patterns").split("\n");
+    const patterns = (0, import_core.getInput)("pattern").split("\n");
     const gitHubToken = (0, import_core.getInput)("token");
     const client = (0, import_github.getOctokit)(gitHubToken);
-    const {repo, payload} = import_github.context;
-    const issueNumber = payload.pull_request && payload.pull_request.number;
+    const issueNumber = (_a = import_github.context.payload.pull_request) == null ? void 0 : _a.number;
+    const {data: comments} = await client.issues.listComments({
+      ...import_github.context.repo,
+      issue_number: issueNumber
+    });
     console.error("ISSUE NO", issueNumber);
     console.error("ISSUE PATTERNS", patterns);
-    await getCommentsForPattern({
-      client,
-      pattern: patterns == null ? void 0 : patterns[0],
-      issueNumber
-    });
+    const comment = comments.find(({body}) => body.includes(patterns == null ? void 0 : patterns[0]));
+    console.error("FOUND COMMENT", comment);
+    if (comment) {
+      const url = (_b = comment.body.match(urlRegex)) == null ? void 0 : _b[1];
+      console.error("WE HAVE URL", url);
+      (0, import_core.setOutput)("comment_url", url);
+    }
   } catch (error) {
     (0, import_core.setFailed)(error.message);
   }
