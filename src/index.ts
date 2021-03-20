@@ -26,7 +26,7 @@ async function run() {
       setOutput("comment_url", url);
     }
   } catch (error) {
-    setFailed(error.message);
+    setFailed(`[action-get-comment-url] ${error.message}`);
   }
 }
 

@@ -4584,7 +4584,7 @@ async function run() {
       (0, import_core.setOutput)("comment_url", url);
     }
   } catch (error) {
-    (0, import_core.setFailed)(error.message);
+    (0, import_core.setFailed)(`[action-get-comment-url] ${error.message}`);
   }
 }
 run();
