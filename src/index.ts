@@ -1,5 +1,5 @@
 import { context, getOctokit } from "@actions/github";
-import { getInput } from "@actions/core";
+import { getInput, setFailed } from "@actions/core";
 
 async function getCommentsForPattern({ client, pattern, issueNumber }) {
   const { data: comments } = await client.issues.listComments({
@@ -16,21 +16,26 @@ async function getCommentsForPattern({ client, pattern, issueNumber }) {
  */
 
 async function run() {
-  const patterns = getInput("patterns").split("\n");
-  const gitHubToken = getInput("token");
+  try {
+    const patterns = getInput("patterns").split("\n");
+    const gitHubToken = getInput("token");
 
-  const client = getOctokit(gitHubToken);
+    const client = getOctokit(gitHubToken);
 
-  const { repo, payload } = context;
+    const { repo, payload } = context;
 
-  const issueNumber = payload.pull_request && payload.pull_request.number;
-  console.error("ISSUE NO", issueNumber);
-  console.error("ISSUE PATTERNS", patterns);
+    const issueNumber = payload.pull_request && payload.pull_request.number;
+    console.error("ISSUE NO", issueNumber);
+    console.error("ISSUE PATTERNS", patterns);
 
-  await getCommentsForPattern({
-    client,
-    pattern: patterns?.[0],
-    issueNumber,
-  });
+    await getCommentsForPattern({
+      client,
+      pattern: patterns?.[0],
+      issueNumber,
+    });
+  } catch (error) {
+    setFailed(error.message);
+  }
 }
+
 run();
