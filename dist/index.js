@@ -1011,7 +1011,7 @@ var require_before_after_hook = __commonJS((exports, module) => {
   module.exports.Collection = Hook.Collection;
 });
 
-// node_modules/is-plain-object/dist/is-plain-object.js
+// node_modules/@octokit/endpoint/node_modules/is-plain-object/dist/is-plain-object.js
 var require_is_plain_object = __commonJS((exports) => {
   "use strict";
   Object.defineProperty(exports, "__esModule", {value: true});
@@ -1337,6 +1337,37 @@ var require_dist_node2 = __commonJS((exports) => {
   };
   var endpoint = withDefaults(null, DEFAULTS);
   exports.endpoint = endpoint;
+});
+
+// node_modules/@octokit/request/node_modules/is-plain-object/dist/is-plain-object.js
+var require_is_plain_object2 = __commonJS((exports) => {
+  "use strict";
+  Object.defineProperty(exports, "__esModule", {value: true});
+  /*!
+   * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
+   *
+   * Copyright (c) 2014-2017, Jon Schlinkert.
+   * Released under the MIT License.
+   */
+  function isObject(o) {
+    return Object.prototype.toString.call(o) === "[object Object]";
+  }
+  function isPlainObject(o) {
+    var ctor, prot;
+    if (isObject(o) === false)
+      return false;
+    ctor = o.constructor;
+    if (ctor === void 0)
+      return true;
+    prot = ctor.prototype;
+    if (isObject(prot) === false)
+      return false;
+    if (prot.hasOwnProperty("isPrototypeOf") === false) {
+      return false;
+    }
+    return true;
+  }
+  exports.isPlainObject = isPlainObject;
 });
 
 // node_modules/node-fetch/lib/index.js
@@ -2517,7 +2548,7 @@ var require_dist_node5 = __commonJS((exports) => {
   }
   var endpoint = require_dist_node2();
   var universalUserAgent = require_dist_node();
-  var isPlainObject = require_is_plain_object();
+  var isPlainObject = require_is_plain_object2();
   var nodeFetch = _interopDefault(require_lib());
   var requestError = require_dist_node4();
   var VERSION = "5.4.14";
@@ -4516,9 +4547,24 @@ var require_core = __commonJS((exports) => {
 // src/index.ts
 var import_github = __toModule(require_github());
 var import_core = __toModule(require_core());
-var urlRegex = /(https?:\/\/[^ ]*)/;
-async function run() {
+
+// src/commentsHelper.ts
+var urlRegex = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+function getComment({
+  comments,
+  pattern
+}) {
+  return comments == null ? void 0 : comments.find(({body}) => body.includes(pattern));
+}
+function getUrlFromComment(comment, params = {}) {
   var _a, _b;
+  const elementIndex = (params.index || 1) - 1;
+  return (_b = (_a = comment == null ? void 0 : comment.body) == null ? void 0 : _a.match(urlRegex)) == null ? void 0 : _b[elementIndex];
+}
+
+// src/index.ts
+async function run() {
+  var _a;
   try {
     const patterns = (0, import_core.getInput)("pattern").split("\n");
     const gitHubToken = (0, import_core.getInput)("token");
@@ -4530,10 +4576,10 @@ async function run() {
     });
     console.error("ISSUE NO", issueNumber);
     console.error("ISSUE PATTERNS", patterns);
-    const comment = comments.find(({body}) => body.includes(patterns == null ? void 0 : patterns[0]));
+    const comment = getComment({comments, pattern: patterns == null ? void 0 : patterns[0]});
     console.error("FOUND COMMENT", comment);
     if (comment) {
-      const url = (_b = comment.body.match(urlRegex)) == null ? void 0 : _b[1];
+      const url = getUrlFromComment(comment);
       console.error("WE HAVE URL", url);
       (0, import_core.setOutput)("comment_url", url);
     }

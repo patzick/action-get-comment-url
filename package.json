@@ -4,7 +4,7 @@
   "description": "GitHub action to get PR comment URL",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "tsup src/index.ts"
   },
   "author": "patzick <13100280+patzick@users.noreply.github.com>",
@@ -12,6 +12,9 @@
   "devDependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
+    "@types/jest": "^26.0.21",
+    "esbuild-jest": "^0.5.0",
+    "jest": "^26.6.3",
     "tsup": "^4.8.18"
   }
 }
