@@ -1,0 +1,17 @@
+{
+  "name": "action-get-comment-url",
+  "version": "1.0.0",
+  "description": "GitHub action to get PR comment URL",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsup src/index.ts"
+  },
+  "author": "patzick <13100280+patzick@users.noreply.github.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0",
+    "tsup": "^4.8.18"
+  }
+}
