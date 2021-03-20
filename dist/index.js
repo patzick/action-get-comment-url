@@ -4518,7 +4518,7 @@ var import_github = __toModule(require_github());
 var import_core = __toModule(require_core());
 var qwe = true;
 async function run() {
-  const patterns = (0, import_core.getInput)("patterns");
+  const patterns = (0, import_core.getInput)("patterns").split("\n");
   const {repo, payload} = import_github.context;
   const prNumber = payload.pull_request && payload.pull_request.number;
   console.error("ISSUE NO", prNumber);
