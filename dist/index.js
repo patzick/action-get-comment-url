@@ -4562,6 +4562,42 @@ function getUrlFromComment(comment, params = {}) {
   return (_b = (_a = comment == null ? void 0 : comment.body) == null ? void 0 : _a.match(urlRegex)) == null ? void 0 : _b[elementIndex];
 }
 
+// src/platform.ts
+var supportedPlatforms = [
+  "vercel",
+  "netlify",
+  "storefrontcloud"
+];
+function validatePlatform(platformName) {
+  if (!platformName)
+    return;
+  const platform = supportedPlatforms.find((platform2) => (platformName == null ? void 0 : platformName.toLocaleLowerCase()) === platform2);
+  if (!platform)
+    throw new Error(`Unknown platform input: ${platformName}`);
+  return platform;
+}
+function getPlatformPattern(platform) {
+  switch (platform) {
+    case "vercel":
+      return {
+        pattern: "deployed with Vercel",
+        index: 4
+      };
+    case "netlify":
+      return {
+        pattern: "A preview is ready!",
+        index: 1
+      };
+    case "storefrontcloud":
+      return {
+        pattern: "shopware-pwa-canary successfully deployed",
+        index: 1
+      };
+    default:
+      throw new Error(`Unknown platform input: ${platform}`);
+  }
+}
+
 // src/index.ts
 async function fetchComments({
   client,
@@ -4574,25 +4610,37 @@ async function fetchComments({
     });
     return comments;
   } catch (error) {
-    console.warn("No issues found for issue: " + issueNumber);
+    console.warn("No issues found for id: " + issueNumber);
     return [];
   }
 }
 async function execute() {
   var _a;
-  const patterns = (0, import_core.getInput)("pattern").split("\n");
   const gitHubToken = (0, import_core.getInput)("token");
+  const platform = validatePlatform((0, import_core.getInput)("platform"));
+  const patterns = (0, import_core.getInput)("pattern").split("\n");
   const client = (0, import_github.getOctokit)(gitHubToken);
   const issueNumber = (_a = import_github.context.payload.pull_request) == null ? void 0 : _a.number;
   console.error("ISSUE NO", issueNumber);
   console.error("ISSUE PATTERNS", patterns);
+  console.error("Platform", platform);
+  let settings = {
+    pattern: patterns == null ? void 0 : patterns[0],
+    index: 1
+  };
+  if (platform) {
+    settings = getPlatformPattern(platform);
+  }
   const comments = await fetchComments({client, issueNumber});
-  const comment = getComment({comments, pattern: patterns == null ? void 0 : patterns[0]});
+  const comment = getComment({comments, pattern: settings.pattern});
   console.error("FOUND COMMENT", comment);
+  (0, import_core.setOutput)("found_url", false);
   if (comment) {
-    const url = getUrlFromComment(comment);
+    const url = getUrlFromComment(comment, {index: settings.index});
     console.error("WE HAVE URL", url);
     (0, import_core.setOutput)("comment_url", url);
+    (0, import_core.setOutput)("found_url", !!url);
+    return;
   }
 }
 async function run() {

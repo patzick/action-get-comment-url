@@ -5,6 +5,9 @@ inputs:
   token:
     description: 'Github API token'
     required: true
+  platform:
+    description: 'Platform which generated PR preview link. Supported: Vercel, Netlify'
+    default: ''
   pattern:
     description: 'Pattern you have in comments with URLs'
     default: ''
