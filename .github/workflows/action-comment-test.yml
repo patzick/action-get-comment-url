@@ -3,7 +3,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
       - 'releases/*'
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
   extract-comment:
     runs-on: ubuntu-latest
     steps:
-    - uses: patzick/action-get-comment-url@master
+    - uses: patzick/action-get-comment-url@main
       with:
         gitToken: ${{ secrets.GITHUB_TOKEN }}
         patterns: |
