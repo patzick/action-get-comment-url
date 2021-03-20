@@ -13,6 +13,7 @@ jobs:
     steps:
     - uses: patzick/action-get-comment-url@main
       with:
+        token: ${{ secrets.GITHUB_TOKEN }}
         patterns: |
           shopware-pwa-canary successfully deployed
           another pattern?
