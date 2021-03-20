@@ -1,0 +1,18 @@
+name: "Test Comment Action"
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - 'releases/*'
+
+jobs:
+  
+  extract-comment:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: patzick/action-get-comment-url@master
+      with:
+        gitToken: ${{ secrets.GITHUB_TOKEN }}
+        patterns: |
+          my comment pattern
