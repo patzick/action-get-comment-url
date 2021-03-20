@@ -14,4 +14,5 @@ jobs:
     - uses: patzick/action-get-comment-url@main
       with:
         patterns: |
-          my comment pattern
+          shopware-pwa-canary successfully deployed
+          another pattern?
