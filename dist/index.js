@@ -4516,27 +4516,21 @@ var require_core = __commonJS((exports) => {
 // src/index.ts
 var import_github = __toModule(require_github());
 var import_core = __toModule(require_core());
-async function getCommentsForPattern({client, pattern, issueNumber}) {
-  const {data: comments} = await client.issues.listComments({
-    ...import_github.context.repo,
-    issue_number: issueNumber
-  });
-  console.error("comments", comments);
-}
 async function run() {
+  var _a;
   try {
     const patterns = (0, import_core.getInput)("patterns").split("\n");
     const gitHubToken = (0, import_core.getInput)("token");
     const client = (0, import_github.getOctokit)(gitHubToken);
-    const {repo, payload} = import_github.context;
-    const issueNumber = payload.pull_request && payload.pull_request.number;
+    const issueNumber = (_a = import_github.context.payload.pull_request) == null ? void 0 : _a.number;
+    const {data: comments} = await client.issues.listComments({
+      ...import_github.context.repo,
+      issue_number: issueNumber
+    });
     console.error("ISSUE NO", issueNumber);
     console.error("ISSUE PATTERNS", patterns);
-    await getCommentsForPattern({
-      client,
-      pattern: patterns == null ? void 0 : patterns[0],
-      issueNumber
-    });
+    const comment = comments.find(({body}) => body.includes(patterns == null ? void 0 : patterns[0]));
+    console.error("FOUND COMMENT", comment);
   } catch (error) {
     (0, import_core.setFailed)(error.message);
   }
