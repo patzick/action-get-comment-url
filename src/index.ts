@@ -11,7 +11,7 @@ const urlRegex = /(https?:\/\/[^ ]*)/;
 
 async function run() {
   try {
-    const patterns = getInput("patterns").split("\n");
+    const patterns = getInput("pattern").split("\n");
     const gitHubToken = getInput("token");
 
     const client = getOctokit(gitHubToken);

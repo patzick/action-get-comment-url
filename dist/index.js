@@ -4520,7 +4520,7 @@ var urlRegex = /(https?:\/\/[^ ]*)/;
 async function run() {
   var _a, _b;
   try {
-    const patterns = (0, import_core.getInput)("patterns").split("\n");
+    const patterns = (0, import_core.getInput)("pattern").split("\n");
     const gitHubToken = (0, import_core.getInput)("token");
     const client = (0, import_github.getOctokit)(gitHubToken);
     const issueNumber = (_a = import_github.context.payload.pull_request) == null ? void 0 : _a.number;
