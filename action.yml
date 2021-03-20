@@ -2,9 +2,9 @@ name: 'Extract PR comment'
 description: 'GitHub action to get PR comment URL'
 author: 'Patryk Tomczyk @patzick'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 500
+  patterns:
+    description: 'List of patterns you have in comments with URLs'
+    default: ''
 runs:
   using: 'node12'
   main: 'dist/index.js'
