@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});var __create = Object.create;
+"use strict";var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
@@ -4238,10 +4238,10 @@ var require_github = __commonJS((exports) => {
   var Context = __importStar(require_context());
   var utils_1 = require_utils2();
   exports.context = new Context.Context();
-  function getOctokit(token, options) {
+  function getOctokit2(token, options) {
     return new utils_1.GitHub(utils_1.getOctokitOptions(token, options));
   }
-  exports.getOctokit = getOctokit;
+  exports.getOctokit = getOctokit2;
 });
 
 // node_modules/@actions/core/lib/utils.js
@@ -4516,15 +4516,25 @@ var require_core = __commonJS((exports) => {
 // src/index.ts
 var import_github = __toModule(require_github());
 var import_core = __toModule(require_core());
-var qwe = true;
+async function getCommentsForPattern({client, pattern, issueNumber}) {
+  const {data: comments} = await client.issues.listComments({
+    ...import_github.context.repo,
+    issue_number: issueNumber
+  });
+  console.error("comments", comments);
+}
 async function run() {
   const patterns = (0, import_core.getInput)("patterns").split("\n");
+  const gitHubToken = (0, import_core.getInput)("token");
+  const client = (0, import_github.getOctokit)(gitHubToken);
   const {repo, payload} = import_github.context;
-  const prNumber = payload.pull_request && payload.pull_request.number;
-  console.error("ISSUE NO", prNumber);
+  const issueNumber = payload.pull_request && payload.pull_request.number;
+  console.error("ISSUE NO", issueNumber);
   console.error("ISSUE PATTERNS", patterns);
+  await getCommentsForPattern({
+    client,
+    pattern: patterns == null ? void 0 : patterns[0],
+    issueNumber
+  });
 }
 run();
-
-
-exports.qwe = qwe;

@@ -1,7 +1,13 @@
-import { context } from "@actions/github";
+import { context, getOctokit } from "@actions/github";
 import { getInput } from "@actions/core";
 
-export const qwe: boolean = true;
+async function getCommentsForPattern({ client, pattern, issueNumber }) {
+  const { data: comments } = await client.issues.listComments({
+    ...context.repo,
+    issue_number: issueNumber,
+  });
+  console.error("comments", comments);
+}
 
 /**
  * Example comment:
@@ -11,11 +17,20 @@ export const qwe: boolean = true;
 
 async function run() {
   const patterns = getInput("patterns").split("\n");
+  const gitHubToken = getInput("token");
+
+  const client = getOctokit(gitHubToken);
 
   const { repo, payload } = context;
 
-  const prNumber = payload.pull_request && payload.pull_request.number;
-  console.error("ISSUE NO", prNumber);
+  const issueNumber = payload.pull_request && payload.pull_request.number;
+  console.error("ISSUE NO", issueNumber);
   console.error("ISSUE PATTERNS", patterns);
+
+  await getCommentsForPattern({
+    client,
+    pattern: patterns?.[0],
+    issueNumber,
+  });
 }
 run();
