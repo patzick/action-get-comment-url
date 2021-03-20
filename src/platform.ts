@@ -28,7 +28,7 @@ export function getPlatformPattern(platform: SupportedPlatforms) {
       };
     case "storefrontcloud":
       return {
-        pattern: "shopware-pwa-canary successfully deployed",
+        pattern: "successfully deployed",
         index: 1,
       };
 
