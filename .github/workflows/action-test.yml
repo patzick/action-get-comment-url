@@ -1,0 +1,34 @@
+name: "Test Comment Action"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "releases/*"
+
+jobs:
+  extract-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - name: Cache node_modules
+        id: step-cache-node-modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-modules
+        with:
+          path: |
+            node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+      - name: yarn init dependencies
+        if: steps.step-cache-node-modules.outputs.cache-hit != 'true'
+        run: |
+          yarn --frozen-lockfile
+      - name: Run tests
+        run: |
+          yarn test
