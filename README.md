@@ -18,14 +18,14 @@ example usages
     platform: Vercel
 ```
 
-### Neflify
+### Netlify
 
 ```yaml
 - id: get-preview-url
   uses: patzick/action-get-comment-url@v1
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
-    platform: Vercel
+    platform: Netlify
 ```
 
 ### Passing pattern
