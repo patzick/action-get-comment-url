@@ -1,5 +1,5 @@
-name: 'Extract PR comment'
-description: 'GitHub action to get PR comment URL'
+name: 'Extract URL from comment'
+description: 'Automate your workflow by extracting PR preview URLs (or any other URLs) from comments'
 author: 'Patryk Tomczyk @patzick'
 inputs:
   token:
