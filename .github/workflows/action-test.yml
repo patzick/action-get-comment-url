@@ -1,4 +1,4 @@
-name: "Test Comment Action"
+name: "Run tests"
 on:
   pull_request:
   push:
@@ -7,7 +7,7 @@ on:
       - "releases/*"
 
 jobs:
-  extract-comment:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
