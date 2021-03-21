@@ -6,14 +6,38 @@ In many cases you can configure your workflow, to generate Pull Request previews
 
 ## Quick start
 
-example usage
+example usages
+
+### Vercel
 
 ```yaml
 - id: get-preview-url
-  uses: patzick/action-get-comment-url@main
+  uses: patzick/action-get-comment-url@v1
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
-    pattern: This pull request is being automatically deployed with Vercel
+    platform: Vercel
+```
+
+### Neflify
+
+```yaml
+- id: get-preview-url
+  uses: patzick/action-get-comment-url@v1
+  with:
+    token: ${{ secrets.GITHUB_TOKEN }}
+    platform: Vercel
+```
+
+### Passing pattern
+
+You can pass any unique part of the comment content.
+
+```yaml
+- id: get-preview-url
+  uses: patzick/action-get-comment-url@v1
+  with:
+    token: ${{ secrets.GITHUB_TOKEN }}
+    pattern: being automatically deployed
 ```
 
 you can use that in other step like this
@@ -28,15 +52,24 @@ you can use that in other step like this
 
 ### Inputs
 
-| Parameter | Required | Description                                                         |
-| --------- | -------- | ------------------------------------------------------------------- |
-| token     | true     | Required for action to run, just pass `${{ secrets.GITHUB_TOKEN }}` |
-| pattern   | false    | Search for comment with this pattern to extract URL                 |
+| Parameter | Required | Description                                                                                     |
+| --------- | -------- | ----------------------------------------------------------------------------------------------- |
+| token     | true     | Required for action to run, just pass `${{ secrets.GITHUB_TOKEN }}`                             |
+| platform  | false    | Preconfigured settings for platforms. Available values: `vercel`, `netflify`, `storefrontcloud` |
+| pattern   | false    | [ignored when `platform` provided] Search for comment with this pattern to extract URL          |
+| index     | false    | [ignored when `platform` provided] Which URL in commit should be returned. The default is 1.    |
 
 `pattern` param by default will return url from the first comment with a link (which probably is not what you need)
 
 ### Outputs
 
-| Parameter   | Description                                            |
-| ----------- | ------------------------------------------------------ |
-| comment_url | URL from the first comment, which matches the criteria |
+| Parameter   | Type    | Description                                            |
+| ----------- | ------- | ------------------------------------------------------ |
+| comment_url | string  | URL from the first comment, which matches the criteria |
+| found_url   | boolean | value indicating whether URL was found                 |
+
+You can access output values, by reaching for step id. If you use this action with id `get-preview-url` you can access it
+
+```
+${{ steps.get-preview-url.outputs.comment_url }}
+```

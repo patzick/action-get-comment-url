@@ -4619,29 +4619,28 @@ async function execute() {
   const gitHubToken = (0, import_core.getInput)("token");
   const platform = validatePlatform((0, import_core.getInput)("platform"));
   const patterns = (0, import_core.getInput)("pattern").split("\n");
+  const urlIndex = Number((0, import_core.getInput)("index")) || 1;
   const client = (0, import_github.getOctokit)(gitHubToken);
   const issueNumber = (_a = import_github.context.payload.pull_request) == null ? void 0 : _a.number;
-  console.error("ISSUE NO", issueNumber);
-  console.error("ISSUE PATTERNS", patterns);
-  console.error("Platform", platform);
   let settings = {
     pattern: patterns == null ? void 0 : patterns[0],
-    index: 1
+    index: urlIndex
   };
   if (platform) {
+    console.info("Platform param is provided. Pattern and index params are ignored.");
     settings = getPlatformPattern(platform);
   }
   const comments = await fetchComments({client, issueNumber});
   const comment = getComment({comments, pattern: settings.pattern});
-  console.error("FOUND COMMENT", comment);
-  (0, import_core.setOutput)("found_url", false);
   if (comment) {
+    console.info("Comment found");
     const url = getUrlFromComment(comment, {index: settings.index});
-    console.error("WE HAVE URL", url);
+    console.info("Extracted URL", url);
     (0, import_core.setOutput)("comment_url", url);
     (0, import_core.setOutput)("found_url", !!url);
     return;
   }
+  (0, import_core.setOutput)("found_url", false);
 }
 async function run() {
   try {

@@ -11,6 +11,9 @@ inputs:
   pattern:
     description: 'Pattern you have in comments with URLs'
     default: ''
+  index:
+    description: 'Which URL from the comment should we extract'
+    default: '1'
 runs:
   using: 'node12'
   main: 'dist/index.js'
